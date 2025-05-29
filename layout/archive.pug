@@ -39,12 +39,7 @@ block content
           each post in monthData.posts
             .archive-post
               a(href=url_for(post.path))= post.title
-              .post-meta
-                | Date: #{post.date.format('MMMM D, YYYY')} 
-                if post.reading_time
-                  | | Estimated Reading Time: #{post.reading_time} min 
-                if config.author
-                  | | Author: #{config.author}
+              //- Removed date and author information
 
     else
       //- Year-specific view
@@ -54,11 +49,6 @@ block content
         if article && article.date
           .archive-post
             a(href=url_for(article.path))= article.title
-            .post-meta
-              | Date: #{article.date.format('MMMM D, YYYY')} 
-              if article.reading_time
-                | | Estimated Reading Time: #{article.reading_time} min 
-              if config.author
-                | | Author: #{config.author}
+            //- Removed date and author information
 
       #paginator!= paginator()
