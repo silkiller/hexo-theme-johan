@@ -6,12 +6,7 @@ menu:
   Home: /
   About: /about
   Archives: /archives
-  Tag: /tags
-
-tag_dir: tags
-tag_generator:
-  per_page: 10
-  enable_index_page: true
+  Tags: /tags
 
 # stylesheets loaded in the <head>
 stylesheets:
