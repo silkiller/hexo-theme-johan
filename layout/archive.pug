@@ -28,14 +28,14 @@ block content
       //- Sort years in descending order (newest first)
       - var sortedYears = Object.keys(years).sort((a, b) => b - a)
       
-      //- Display years and months in Lilian Weng style
+      //- Display years and months in two-column layout
       each year in sortedYears
         - var yearData = years[year]
         - var yearPostCount = 0
         each monthData, month in yearData
           - yearPostCount += monthData.posts.length
         
-        //- Year header (h1 style)
+        //- Year header
         h1 #{year}
         .year-info #{yearPostCount}
         
@@ -45,18 +45,19 @@ block content
         each month in sortedMonths
           - var monthData = yearData[month]
           
-          //- Month header (h2 style)
-          h2 #{monthData.name}
-          .month-info #{monthData.posts.length}
-          
-          //- Sort posts within month by date descending (newest first)
-          - var sortedPosts = monthData.posts.sort((a, b) => b.date - a.date)
-          
-          //- Posts list
-          .posts-list
-            each post in sortedPosts
-              .archive-post
-                a(href=url_for(post.path))= post.title
+          //- Two-column layout: Month on left, posts on right
+          .month-section
+            .month-header
+              .month-name #{monthData.name}
+              .month-count #{monthData.posts.length}
+            
+            .posts-column
+              //- Sort posts within month by date descending (newest first)
+              - var sortedPosts = monthData.posts.sort((a, b) => b.date - a.date)
+              
+              each post in sortedPosts
+                .archive-post
+                  a(href=url_for(post.path))= post.title
 
     else
       //- Year-specific view
@@ -80,12 +81,14 @@ block content
       each month in sortedMonths
         - var monthData = months[month]
         
-        h2 #{monthData.name}
-        .month-info #{monthData.posts.length}
-        
-        .posts-list
-          each article in monthData.posts
-            .archive-post
-              a(href=url_for(article.path))= article.title
+        .month-section
+          .month-header
+            .month-name #{monthData.name}
+            .month-count #{monthData.posts.length}
+          
+          .posts-column
+            each article in monthData.posts
+              .archive-post
+                a(href=url_for(article.path))= article.title
 
       #paginator!= paginator()
