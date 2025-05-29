@@ -1,81 +1,91 @@
-/* Archive Page Styles */
-.archive {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+extends _includes/layout.pug
 
-/* Year header */
-.archive h1 {
-  font-size: 2.5em;
-  font-weight: bold;
-  margin: 40px 0 10px 0;
-  color: #333;
-  border-bottom: none;
-}
+block content
+  div.archive
+    if !is_year()
+      if theme.atom
+        p The feed is available via&nbsp;
+          a(href=theme.atom) atom
+          span .
+        br
 
-/* Year post count */
-.year-info {
-  font-size: 1.2em;
-  color: #666;
-  margin-bottom: 30px;
-}
+      //- Timeline-style archive layout
+      - var years = {}
+      - var posts = site.posts.toArray()
+      
+      //- Group posts by year and month
+      if posts && posts.length
+        each post in posts
+          if post && post.date
+            - var year = post.date.year()
+            - var month = post.date.month() + 1
+            - var monthName = post.date.format('MMMM')
+            
+            - if (!years[year]) years[year] = {}
+            - if (!years[year][month]) years[year][month] = { name: monthName, posts: [] }
+            - years[year][month].posts.push(post)
 
-/* Month header */
-.archive h2 {
-  font-size: 1.5em;
-  font-weight: 600;
-  margin: 30px 0 5px 0;
-  color: #444;
-}
+      //- Sort years in descending order (newest first)
+      - var sortedYears = Object.keys(years).sort((a, b) => b - a)
+      
+      //- Display years and months in Lilian Weng style
+      each year in sortedYears
+        - var yearData = years[year]
+        - var yearPostCount = 0
+        each monthData, month in yearData
+          - yearPostCount += monthData.posts.length
+        
+        //- Year header (h1 style)
+        h1 #{year}
+        .year-info #{yearPostCount}
+        
+        //- Sort months in descending order (newest first)
+        - var sortedMonths = Object.keys(yearData).sort((a, b) => b - a)
+        
+        each month in sortedMonths
+          - var monthData = yearData[month]
+          
+          //- Month header (h2 style)
+          h2 #{monthData.name}
+          .month-info #{monthData.posts.length}
+          
+          //- Sort posts within month by date descending (newest first)
+          - var sortedPosts = monthData.posts.sort((a, b) => b.date - a.date)
+          
+          //- Posts list
+          .posts-list
+            each post in sortedPosts
+              .archive-post
+                a(href=url_for(post.path))= post.title
 
-/* Month post count */
-.month-info {
-  font-size: 1em;
-  color: #666;
-  margin-bottom: 15px;
-}
+    else
+      //- Year-specific view
+      h1= page.year
 
-/* Posts list container */
-.posts-list {
-  margin-bottom: 30px;
-}
+      //- Sort posts in descending order (newest first)
+      - var sortedArticles = page.posts.toArray().sort((a, b) => b.date - a.date)
+      
+      //- Group by month for year view
+      - var months = {}
+      each article in sortedArticles
+        if article && article.date
+          - var month = article.date.month() + 1
+          - var monthName = article.date.format('MMMM')
+          - if (!months[month]) months[month] = { name: monthName, posts: [] }
+          - months[month].posts.push(article)
+      
+      //- Sort months in descending order
+      - var sortedMonths = Object.keys(months).sort((a, b) => b - a)
+      
+      each month in sortedMonths
+        - var monthData = months[month]
+        
+        h2 #{monthData.name}
+        .month-info #{monthData.posts.length}
+        
+        .posts-list
+          each article in monthData.posts
+            .archive-post
+              a(href=url_for(article.path))= article.title
 
-/* Individual archive post */
-.archive-post {
-  margin-bottom: 8px;
-  padding-left: 20px;
-}
-
-.archive-post a {
-  color: #0066cc;
-  text-decoration: none;
-  font-size: 1.1em;
-  line-height: 1.6;
-  display: block;
-  transition: color 0.2s ease;
-}
-
-.archive-post a:hover {
-  color: #004499;
-  text-decoration: underline;
-}
-
-/* Optional: Add some responsive design */
-@media (max-width: 768px) {
-  .archive {
-    padding: 15px;
-  }
-  
-  .archive h1 {
-    font-size: 2em;
-  }
-  
-  .archive h2 {
-    font-size: 1.3em;
-  }
-  
-  .archive-post {
-    padding-left: 10px;
-  }
-}
+      #paginator!= paginator()
