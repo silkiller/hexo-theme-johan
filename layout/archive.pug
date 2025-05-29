@@ -1,0 +1,64 @@
+extends _includes/layout.pug
+
+block content
+  div.archive
+    if !is_year()
+      if theme.atom
+        p The feed is available via&nbsp;
+          a(href=theme.atom) atom
+          span .
+        br
+
+      //- Timeline-style archive layout
+      - var years = {}
+      - var posts = site.posts.toArray()
+      
+      //- Group posts by year and month
+      if posts && posts.length
+        each post in posts
+          if post && post.date
+            - var year = post.date.year()
+            - var month = post.date.month() + 1
+            - var monthName = post.date.format('MMMM')
+            
+            - if (!years[year]) years[year] = {}
+            - if (!years[year][month]) years[year][month] = { name: monthName, posts: [] }
+            - years[year][month].posts.push(post)
+
+      //- Display years and months in timeline format
+      each yearData, year in years
+        - var yearPostCount = 0
+        each monthData, month in yearData
+          - yearPostCount += monthData.posts.length
+        
+        h2(data-count=yearPostCount) #{year}
+        
+        each monthData, month in yearData
+          h3(data-count=monthData.posts.length) #{monthData.name}
+          
+          each post in monthData.posts
+            .archive-post
+              a(href=url_for(post.path))= post.title
+              .post-meta
+                | Date: #{post.date.format('MMMM D, YYYY')} 
+                if post.reading_time
+                  | | Estimated Reading Time: #{post.reading_time} min 
+                if config.author
+                  | | Author: #{config.author}
+
+    else
+      //- Year-specific view
+      h1= page.month + '/' + page.year
+
+      each article in page.posts.toArray()
+        if article && article.date
+          .archive-post
+            a(href=url_for(article.path))= article.title
+            .post-meta
+              | Date: #{article.date.format('MMMM D, YYYY')} 
+              if article.reading_time
+                | | Estimated Reading Time: #{article.reading_time} min 
+              if config.author
+                | | Author: #{config.author}
+
+      #paginator!= paginator()

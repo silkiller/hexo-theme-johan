@@ -1,0 +1,56 @@
+// Archive page timeline style
+.archive
+  margin: 2em 0
+  
+  h1, h2, h3
+    font-weight: 600
+    margin-bottom: 0.5em
+  
+  // Year heading
+  h2
+    font-size: 1.8em
+    margin-top: 1.5em
+    display: flex
+    align-items: baseline
+    
+    // Post count for year
+    &::after
+      content: attr(data-count)
+      font-size: 0.6em
+      margin-left: 0.5em
+      color: #888
+  
+  // Month heading
+  h3
+    font-size: 1.4em
+    margin-top: 1em
+    margin-left: 1em
+    display: flex
+    align-items: baseline
+    
+    // Post count for month
+    &::after
+      content: attr(data-count)
+      font-size: 0.6em
+      margin-left: 0.5em
+      color: #888
+  
+  // Post entry
+  .archive-post
+    margin: 0.5em 0 1em 2em
+    padding-left: 1em
+    border-left: 2px solid #f3f3f3
+    
+    a
+      font-size: 1.1em
+      font-weight: 500
+      color: #113CFC
+      text-decoration: none
+      
+      &:hover
+        text-decoration: underline
+    
+    .post-meta
+      font-size: 0.9em
+      color: #888
+      margin-top: 0.3em

@@ -1,0 +1,32 @@
+extends _includes/layout.pug
+
+block content
+  div#tag
+    //- Tag cloud visualization
+    if is_tag()
+      //- Display posts with the current tag
+      h1= 'Tag: ' + page.tag
+      - page.posts.each(function(article){
+        .post-item
+          - post = article
+          include _includes/post_item.pug
+      - })
+      #paginator!= paginator()
+    else
+      //- Display all tags as a tag cloud
+      h1 Tags
+      
+      - var tags = site.tags.sort('name')
+      - var maxCount = 0
+      - tags.forEach(function(tag) {
+      -   if (tag.length > maxCount) maxCount = tag.length
+      - })
+      
+      .tag-cloud
+        - tags.forEach(function(tag) {
+        -   var size = Math.ceil((tag.length / maxCount) * 8)
+        -   if (size < 1) size = 1
+        -   if (size > 8) size = 8
+          a(class="tag-size-" + size, href=url_for(tag.path))= tag.name
+            span.tag-count #{tag.length}
+        - })
