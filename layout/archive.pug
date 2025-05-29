@@ -1,54 +1,81 @@
-extends _includes/layout.pug
+/* Archive Page Styles */
+.archive {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-block content
-  div.archive
-    if !is_year()
-      if theme.atom
-        p The feed is available via&nbsp;
-          a(href=theme.atom) atom
-          span .
-        br
+/* Year header */
+.archive h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 40px 0 10px 0;
+  color: #333;
+  border-bottom: none;
+}
 
-      //- Timeline-style archive layout
-      - var years = {}
-      - var posts = site.posts.toArray()
-      
-      //- Group posts by year and month
-      if posts && posts.length
-        each post in posts
-          if post && post.date
-            - var year = post.date.year()
-            - var month = post.date.month() + 1
-            - var monthName = post.date.format('MMMM')
-            
-            - if (!years[year]) years[year] = {}
-            - if (!years[year][month]) years[year][month] = { name: monthName, posts: [] }
-            - years[year][month].posts.push(post)
+/* Year post count */
+.year-info {
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 30px;
+}
 
-      //- Display years and months in timeline format
-      each yearData, year in years
-        - var yearPostCount = 0
-        each monthData, month in yearData
-          - yearPostCount += monthData.posts.length
-        
-        h2(data-count=yearPostCount) #{year}
-        
-        each monthData, month in yearData
-          h3(data-count=monthData.posts.length) #{monthData.name}
-          
-          each post in monthData.posts
-            .archive-post
-              a(href=url_for(post.path))= post.title
-              //- Removed date and author information
+/* Month header */
+.archive h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 30px 0 5px 0;
+  color: #444;
+}
 
-    else
-      //- Year-specific view
-      h1= page.month + '/' + page.year
+/* Month post count */
+.month-info {
+  font-size: 1em;
+  color: #666;
+  margin-bottom: 15px;
+}
 
-      each article in page.posts.toArray()
-        if article && article.date
-          .archive-post
-            a(href=url_for(article.path))= article.title
-            //- Removed date and author information
+/* Posts list container */
+.posts-list {
+  margin-bottom: 30px;
+}
 
-      #paginator!= paginator()
+/* Individual archive post */
+.archive-post {
+  margin-bottom: 8px;
+  padding-left: 20px;
+}
+
+.archive-post a {
+  color: #0066cc;
+  text-decoration: none;
+  font-size: 1.1em;
+  line-height: 1.6;
+  display: block;
+  transition: color 0.2s ease;
+}
+
+.archive-post a:hover {
+  color: #004499;
+  text-decoration: underline;
+}
+
+/* Optional: Add some responsive design */
+@media (max-width: 768px) {
+  .archive {
+    padding: 15px;
+  }
+  
+  .archive h1 {
+    font-size: 2em;
+  }
+  
+  .archive h2 {
+    font-size: 1.3em;
+  }
+  
+  .archive-post {
+    padding-left: 10px;
+  }
+}
