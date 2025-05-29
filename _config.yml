@@ -6,7 +6,7 @@ menu:
   Home: /
   About: /about
   Archives: /archives
-  Tag: /tags
+  Tag: /tag
 
 # stylesheets loaded in the <head>
 stylesheets:
