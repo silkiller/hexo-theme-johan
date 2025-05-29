@@ -6,7 +6,7 @@ menu:
   Home: /
   About: /about
   Archives: /archives
-  Tags: /tags
+  Tag: /tags
 
 tag_dir: tags
 tag_generator:
